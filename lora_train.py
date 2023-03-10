@@ -44,7 +44,7 @@ def lora_train(project_name, project_dir, concepts_json_path, train_config_yaml,
     with open(train_config_yaml) as f:
         train_config = yaml.safe_load(f)
     
-    model_path = Path(train_config['model_path'])
+    model_path = Path(train_config['model_path']).absolute()
     v2 = train_config['v2']
     
     if not model_path.exists():
