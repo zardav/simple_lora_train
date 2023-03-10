@@ -1,0 +1,44 @@
+model_path: v1-5-pruned-emaonly.safetensors
+# https://huggingface.co/stabilityai/stable-diffusion-2-1-base/resolve/main/v2-1_512-ema-pruned.safetensors
+# https://huggingface.co/runwayml/stable-diffusion-v1-5/resolve/main/v1-5-pruned-emaonly.safetensors
+model_url: https://huggingface.co/runwayml/stable-diffusion-v1-5/resolve/main/v1-5-pruned-emaonly.safetensors
+v2: false
+v_parameterization: false
+vae: ''
+
+num_epochs: 500
+save_n_epochs_type: save_every_n_epochs # options: ["save_every_n_epochs", "save_n_epoch_ratio"]
+save_n_epochs_type_value: 250
+train_batch_size: 1
+gradient_accumulation_steps: 1
+gradient_checkpointing: false
+learning_rate: 0.0001
+text_encoder_lr: 5.0e-05
+unet_lr: 0.0001
+
+lr_scheduler: constant # options: ["linear", "cosine", "cosine_with_restarts", "polynomial", "constant", "constant_with_warmup"]
+lr_scheduler_num_cycles: 1
+lr_scheduler_power: 1
+network_alpha: 128
+network_dim: 128
+network_module: networks.lora
+network_train_on: both # options: ['both','unet_only', 'text_encoder_only']
+seed: 0
+
+enable_bucket: true
+max_bucket_reso: 1024
+min_bucket_reso: 256
+max_token_length: 255
+mixed_precision: fp16
+no_metadata: false
+prior_loss_weight: 1.0
+resolution: 512
+resume_dir: ''
+save_model_as: safetensors
+save_precision: fp16
+shuffle_caption: false
+training_comment: ''
+use_8bit_adam: true
+cache_latents: true
+caption_extension: .txt
+clip_skip: 2
