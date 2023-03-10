@@ -13,6 +13,7 @@ def batch_make(load_dir: str, save_dir: str, images_per_prompt: int = 4, replace
     pipe = pipe.to("cuda")
     load_dir = Path(load_dir)
     save_dir = Path(save_dir)
+    save_dir.mkdir(exist_ok=True)
     
     negative_prompt = "blurry, low quality, low resolution. mutated hands"
     prompt_files = list(load_dir.glob('*.txt'))
