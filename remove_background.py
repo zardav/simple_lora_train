@@ -12,6 +12,8 @@ class BgRemover:
     def __init__(self):
         self.bg_model = torch.hub.load('pytorch/vision:v0.6.0', 'deeplabv3_resnet101', pretrained=True)
         self.bg_model.eval()
+        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        self.bg_model.to(device)
 
     def get_background_mask(self, input_image):
         preprocess = transforms.Compose([
@@ -22,10 +24,7 @@ class BgRemover:
         input_tensor = preprocess(input_image)
         input_batch = input_tensor.unsqueeze(0)  # create a mini-batch as expected by the model
 
-        # move the input and model to GPU for speed if available
-        if torch.cuda.is_available():
-            input_batch = input_batch.to('cuda')
-            self.bg_model.to('cuda')
+        input_batch = input_batch.to('cuda')
 
         with torch.no_grad():
             output = self.bg_model(input_batch)['out'][0]
