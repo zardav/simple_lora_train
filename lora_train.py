@@ -20,12 +20,12 @@ def lora_train(project_name, project_dir, concepts_json_path, train_config_yaml,
     
 
     for con in concepts:
-        link_from = train_data_dir / f"{con['repeats']}_{con['name']}"
+        link_from = train_data_dir / f"{con.get('repeats', 1)}_{con['name']}"
         link_to = Path(con['data_dir'])
         link_from.symlink_to(link_to)
 
     for reg in regs:
-        link_from = reg_data_dir / f"{reg['repeats']}_{reg['name']}"
+        link_from = reg_data_dir / f"{reg.get('repeats', 1)}_{reg['name']}"
         link_to = Path(reg['data_dir']})
         link_from.symlink_to(link_to)
         
