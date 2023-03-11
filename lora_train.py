@@ -13,7 +13,7 @@ def lora_train(project_name, project_dir, concepts_json_path, train_config_yaml,
     train_data_dir.mkdir(exist_ok=True)
     reg_data_dir.mkdir(exist_ok=True)
     
-    with open(concepts_path, 'r') as f:
+    with open(concepts_json_path) as f:
         d = json.load(f)
     concepts = d['concepts']
     regs = d['regs']
