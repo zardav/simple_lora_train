@@ -23,7 +23,7 @@ class Resizer:
         self.model.iou = 0.45  # NMS IoU threshold
         self.model.classes = None  # (optional list) filter by class
         
-    def resize(self, img_path):
+    def get_square(self, img_path):
         pred = model(img_path)[0]
         person_indices = [n_to_label(x)=='person' for x in pred[:, 5]]
         filtered_pred = pred[person_indices, :]
@@ -36,6 +36,43 @@ class Resizer:
         margin = 20
         minimum_box = min_x-margin, min_y-margin, max_x+margin, max_y+margin
         image = Image.open(img_path)
-        xy_diff = image.size[0] - image.size[1]
-
+        width, height = image.size
+        xy_diff = width - height
+        if xy_diff > 0:
+            # First: symmetric crop
+            new_x1 = min(0+xy_diff//2, minimum_box[0])
+            new_x2 = max(width-xy_diff//2, minimum_box[2])
+            new_width = new_x2-new_x1
+            if new_width == height:
+                return new_x1, 0, new_x2, height
+            # Then perform max crop
+            cropped_right = width - new_x2
+            new_x1 = min(0+xy_diff-cropped_right, minimum_box[0])
+            cropped_left = new_x1
+            new_x2 = max(width-(xy_diff-cropped_left), minimum_box[2])
+            new_width = new_x2 - new_x1
+            if new_width == height:
+                return new_x1, 0, new_x2, height
+            # Then symmetric pad
+            y_to_pad = new_width - height
+            return new_x1, -y_to_pad//2, new_x2, height+y_to_pd//2
+        elif xy_diff < 0:
+            yx_diff = -xy_diff
+            # First: symmetric crop
+            new_y1 = min(0+yx_diff//2, minimum_box[1])
+            new_y2 = max(height-xy_diff//2, minimum_box[3])
+            new_height = new_y2-new_y1
+            if new_height == width:
+                return 0, new_y1, width, new_y2
+            # Then perform max crop
+            cropped_bottom = height - new_y2
+            new_y1 = min(0+yx_diff-cropped_bottom, minimum_box[1])
+            cropped_top = new_y1
+            new_y2 = max(height-(yx_diff-cropped_top), minimum_box[3])
+            new_height = new_y2 - new_y1
+            if new_height == width:
+                return 0, new_y1, width, new_y2
+            # Then symmetric pad
+            y_to_pad = new_width - height
+            return new_x1, -y_to_pad//2, new_x2, height+y_to_pd//2
         
