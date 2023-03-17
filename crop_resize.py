@@ -23,6 +23,15 @@ class Resizer:
         self.model.iou = 0.45  # NMS IoU threshold
         self.model.classes = None  # (optional list) filter by class
         
+    def get_square_image(self, img_path):
+        x1, y1, x2, y2 = self.get_square(img_path)
+        image = Image.open(img_path)
+        width, height = image.size
+        result = Image.new(image.mode, (x2-x1, y2-y1), 'black')
+        to_paste = image.crop((max(x1, 0), max(y1, 0), min(x2, width), min(y2, height)))
+        result.paste(to_paste, (-x1, -y1))
+        return result
+        
     def get_square(self, img_path):
         pred = model(img_path)[0]
         person_indices = [n_to_label(x)=='person' for x in pred[:, 5]]
