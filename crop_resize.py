@@ -29,7 +29,7 @@ class Resizer:
         width, height = image.size
         result = Image.new(image.mode, (x2-x1, y2-y1), 'black')
         to_paste = image.crop((max(x1, 0), max(y1, 0), min(x2, width), min(y2, height)))
-        result.paste(to_paste, (-x1, -y1))
+        result.paste(to_paste, (max(0, -x1), max(0, -y1)))
         return result
         
     def get_square_image_of_size(self, img_path, size):
@@ -46,9 +46,9 @@ class Resizer:
         max_x = filtered_pred[:, 2].max()
         max_y = filtered_pred[:, 3].max()
         margin = 20
-        minimum_box = min_x-margin, min_y-margin, max_x+margin, max_y+margin
         image = Image.open(img_path)
         width, height = image.size
+        minimum_box = max(0, min_x-margin), max(0, min_y-margin), min(width, max_x+margin), min(height, max_y+margin)
         xy_diff = width - height
         if xy_diff > 0:
             # First: symmetric crop
@@ -56,7 +56,7 @@ class Resizer:
             new_x2 = max(width-xy_diff//2, minimum_box[2])
             new_width = new_x2-new_x1
             if new_width == height:
-                return new_x1, 0, new_x2, height
+                return int(new_x1), 0, int(new_x2), height
             # Then perform max crop
             cropped_right = width - new_x2
             new_x1 = min(0+xy_diff-cropped_right, minimum_box[0])
@@ -64,10 +64,10 @@ class Resizer:
             new_x2 = max(width-(xy_diff-cropped_left), minimum_box[2])
             new_width = new_x2 - new_x1
             if new_width == height:
-                return new_x1, 0, new_x2, height
+                return int(new_x1), 0, int(new_x2), height
             # Then symmetric pad
             y_to_pad = new_width - height
-            return new_x1, -y_to_pad//2, new_x2, height+y_to_pad//2
+            return int(new_x1), int(-y_to_pad//2), int(new_x2), int(height+y_to_pad//2)
         elif xy_diff < 0:
             yx_diff = -xy_diff
             # First: symmetric crop
@@ -75,7 +75,7 @@ class Resizer:
             new_y2 = max(height-xy_diff//2, minimum_box[3])
             new_height = new_y2-new_y1
             if new_height == width:
-                return 0, new_y1, width, new_y2
+                return 0, int(new_y1), width, (new_y2)
             # Then perform max crop
             cropped_bottom = height - new_y2
             new_y1 = min(0+yx_diff-cropped_bottom, minimum_box[1])
@@ -83,10 +83,10 @@ class Resizer:
             new_y2 = max(height-(yx_diff-cropped_top), minimum_box[3])
             new_height = new_y2 - new_y1
             if new_height == width:
-                return 0, new_y1, width, new_y2
+                return 0, int(new_y1), width, int(new_y2)
             # Then symmetric pad
             y_to_pad = new_width - height
-            return new_x1, -y_to_pad//2, new_x2, height+y_to_pd//2
+            return int(new_x1), int(-y_to_pad//2, int(new_x2), int(height+y_to_pad//2)
         else:
             return 0, 0, width, height
         
