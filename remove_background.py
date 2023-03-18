@@ -24,7 +24,8 @@ class BgRemover:
         input_tensor = preprocess(input_image)
         input_batch = input_tensor.unsqueeze(0)  # create a mini-batch as expected by the model
 
-        input_batch = input_batch.to('cuda')
+        if self.device == 'cuda':
+            input_batch = input_batch.to('cuda')
 
         with torch.no_grad():
             output = self.bg_model(input_batch)['out'][0]
