@@ -86,7 +86,7 @@ class Resizer:
                 return 0, int(new_y1), width, int(new_y2)
             # Then symmetric pad
             y_to_pad = new_width - height
-            return int(new_x1), int(-y_to_pad//2, int(new_x2), int(height+y_to_pad//2)
+            return int(new_x1), int(-y_to_pad//2), int(new_x2), int(height+y_to_pad//2)
         else:
             return 0, 0, width, height
         
