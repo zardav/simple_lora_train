@@ -13,7 +13,7 @@ class BgRemover:
         self.bg_model = torch.hub.load('pytorch/vision:v0.6.0', 'deeplabv3_resnet101', pretrained=True)
         self.bg_model.eval()
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
-        self.bg_model.to(device)
+        self.bg_model.to(self.device)
 
     def get_background_mask(self, input_image):
         preprocess = transforms.Compose([
