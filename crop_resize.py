@@ -36,7 +36,7 @@ class Resizer:
         return self.get_square_image(img_path).resize((size, size))
         
     def get_square(self, img_path):
-        pred = model(img_path)[0]
+        pred = self.model(img_path)[0]
         person_indices = [n_to_label(x)=='person' for x in pred[:, 5]]
         filtered_pred = pred[person_indices, :]
         boxes = filtered_pred[:, :4] # x1, y1, x2, y2
