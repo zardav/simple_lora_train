@@ -32,6 +32,9 @@ class Resizer:
         result.paste(to_paste, (-x1, -y1))
         return result
         
+    def get_square_image_of_size(self, img_path, size):
+        return self.get_square_image(img_path).resize((size, size))
+        
     def get_square(self, img_path):
         pred = model(img_path)[0]
         person_indices = [n_to_label(x)=='person' for x in pred[:, 5]]
@@ -84,4 +87,6 @@ class Resizer:
             # Then symmetric pad
             y_to_pad = new_width - height
             return new_x1, -y_to_pad//2, new_x2, height+y_to_pd//2
+        else:
+            return 0, 0, width, height
         
