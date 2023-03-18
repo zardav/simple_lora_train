@@ -7,7 +7,7 @@ def ensure_coco_label_available():
         import coco_labels
     except ImportError:
         from subprocess import run
-        run('wget https://github.com/kadirnar/yolov7-pip/raw/77641b757d695b4840f25d7844b3507cd6b80cff/yolov7/deploy/triton-inference-server/labels.py -O coco_label.py', shell=True)
+        run('wget https://github.com/kadirnar/yolov7-pip/raw/77641b757d695b4840f25d7844b3507cd6b80cff/yolov7/deploy/triton-inference-server/labels.py -O coco_labels.py', shell=True)
 
         
 def n_to_label(n):
@@ -37,7 +37,7 @@ class Resizer:
         
     def get_square(self, img_path):
         pred = self.model(img_path).pred[0]
-        person_indices = [n_to_label(x)=='person' for x in pred[:, 5]]
+        person_indices = [n_to_label(int(x))=='person' for x in pred[:, 5]]
         filtered_pred = pred[person_indices, :]
         boxes = filtered_pred[:, :4] # x1, y1, x2, y2
         scores = filtered_pred[:, 4]
@@ -67,7 +67,7 @@ class Resizer:
                 return new_x1, 0, new_x2, height
             # Then symmetric pad
             y_to_pad = new_width - height
-            return new_x1, -y_to_pad//2, new_x2, height+y_to_pd//2
+            return new_x1, -y_to_pad//2, new_x2, height+y_to_pad//2
         elif xy_diff < 0:
             yx_diff = -xy_diff
             # First: symmetric crop
