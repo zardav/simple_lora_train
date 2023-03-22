@@ -1,5 +1,8 @@
 import yolov7
 from PIL import Image
+from pathlib import Path
+from tqdm import tqdm
+import fire
 
 
 def ensure_coco_label_available():
@@ -90,3 +93,17 @@ class Resizer:
         else:
             return 0, 0, width, height
         
+
+def batch_resize(load_path: str, save_path: str, target_size: int = 512):
+    load_path = Path(load_path)
+    save_path = Path(save_path)
+    save_path.mkdir(exist_ok=True)
+    resizer = Resizer()
+    
+    files_to_load = [*load_path.glob('*.jpg'), *load_path.glob('*.png')]
+    for f in tqdm(files_to_load):
+        resized_image = resizer.get_square_image_of_size(f, target_size)
+        resized_image.save(save_path/f.name)
+        
+if __name__ == '__main__':
+    fire.Fire(batch_resize)
