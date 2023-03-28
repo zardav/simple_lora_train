@@ -26,7 +26,7 @@ seed: 0
 enable_bucket: true
 max_bucket_reso: 1024
 min_bucket_reso: 256
-max_token_length: 255
+max_token_length: 225
 mixed_precision: fp16
 no_metadata: false
 prior_loss_weight: 1.0
