@@ -33,7 +33,7 @@ class Captioner:
         return generated_caption
 
 
-def batch_caption(load_path: str, save_path: str, model: str = "blip", save_ext: str = "txt")
+def batch_caption(load_path: str, save_path: str, model: str = "blip", save_ext: str = "txt"):
     captioner = Captioner()
     if model == "blip":
         captioner.load_blip()
