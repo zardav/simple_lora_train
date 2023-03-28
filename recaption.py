@@ -16,7 +16,7 @@ def batch_recaption(load_dir: str, save_dir: str, replacements: list, caption_ex
     files_to_load = [*load_dir.glob('*.jpg'), *load_dir.glob('*.png')]
     for f in tqdm(files_to_load):
         target_img_path = save_dir/f.name
-        target_img_path.link_to(f)
+        target_img_path.symlink_to(f)
         orig_text_path = load_dir / f"{f.stem}.{caption_ext}"
         target_text_path = save_dir / f"{f.stem}.{caption_ext}"
         
