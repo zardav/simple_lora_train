@@ -1,7 +1,7 @@
 import tempfile
 import yaml
 import json
-from .utils import run_process
+from utils import run_process
 
 
 def lora_train(project_name, project_dir, concepts_json_path, train_config_yaml, tmp_path=None):
