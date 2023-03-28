@@ -15,11 +15,13 @@ class Captioner:
         self.processor = AutoProcessor.from_pretrained("microsoft/git-large-r-textcaps")
         self.model = AutoModelForCausalLM.from_pretrained("microsoft/git-large-r-textcaps")
         self.model.to(self.device)
+        self.model.to(torch.float16)
       
     def load_blip(self):
         self.processor = AutoProcessor.from_pretrained("Salesforce/blip-image-captioning-large")
         self.model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-large")
         self.model.to(self.device)
+        self.model.to(torch.float16)
         
     def caption(self, image):
         inputs = self.processor(images=image, return_tensors="pt").to(self.device)
