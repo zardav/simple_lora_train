@@ -102,7 +102,7 @@ def batch_resize(load_path: str, save_path: str, target_size: int = 512):
     
     files_to_load = [*load_path.glob('*.jpg'), *load_path.glob('*.png')]
     for f in tqdm(files_to_load):
-        resized_image = resizer.get_square_image_of_size(f, target_size)
+        resized_image = resizer.get_square_image_of_size(str(f), target_size)
         resized_image.save(save_path/f.name)
         
 if __name__ == '__main__':
