@@ -27,7 +27,7 @@ def lora_train(project_name, project_dir, concepts_json_path, train_config_yaml,
 
     for reg in regs:
         link_from = reg_data_dir / f"{reg.get('repeats', 1)}_{reg['name']}"
-        link_to = Path(reg['data_dir']})
+        link_to = Path(reg['data_dir'])
         link_from.symlink_to(link_to)
         
     network_weights = ""
