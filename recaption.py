@@ -12,7 +12,7 @@ def apply_replacements(str1, replacements):
 def batch_recaption(load_dir: str, save_dir: str, replacements: list, caption_ext: str = 'txt'):
     load_dir = Path(load_dir)
     save_dir = Path(save_dir)
-    save_path.mkdir(exist_ok=True)
+    save_dir.mkdir(exist_ok=True)
     files_to_load = [*load_dir.glob('*.jpg'), *load_dir.glob('*.png')]
     for f in tqdm(files_to_load):
         target_img_path = save_dir/f.name
