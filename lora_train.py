@@ -1,7 +1,8 @@
 import tempfile
 import yaml
 import json
-import subprocess as sp
+from .utils import run_process
+
 
 def lora_train(project_name, project_dir, concepts_json_path, train_config_yaml, tmp_path=None):
     if tmp_path is None:
@@ -48,9 +49,9 @@ def lora_train(project_name, project_dir, concepts_json_path, train_config_yaml,
     v2 = train_config['v2']
     
     if not model_path.exists():
-        sp.run(f"wget {train_config['model_url']} -O {model_path}", shell=True)
+        run_process(f"wget {train_config['model_url']} -O {model_path}", shell=True)
     if v2:
-        sp.run(f"wget https://raw.githubusercontent.com/Stability-AI/stablediffusion/main/configs/stable-diffusion/v2-inference.yaml {project_dir}/{project_name}.yaml", shell=True)
+        run_process(f"wget https://raw.githubusercontent.com/Stability-AI/stablediffusion/main/configs/stable-diffusion/v2-inference.yaml {project_dir}/{project_name}.yaml", shell=True)
     
     train_command=f"""accelerate launch --num_cpu_threads_per_process=8 train_network.py \
       {"--v2" if v2 else ""} \
@@ -101,6 +102,6 @@ def lora_train(project_name, project_dir, concepts_json_path, train_config_yaml,
       {"--shuffle_caption" if train_config['shuffle_caption'] else ""} \
       --xformers"""
     if not Path("kohya-trainer").exists():
-        sp.run("git clone https://github.com/Linaqruf/kohya-trainer", shell=True)
-    sp.run(train_command, shell=True, cwd="kohya-trainer")
+        run_process("git clone https://github.com/Linaqruf/kohya-trainer", shell=True)
+    run_process(train_command, shell=True, cwd="kohya-trainer")
     
