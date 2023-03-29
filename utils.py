@@ -7,8 +7,7 @@ def run_process(args, shell=False, **kwargs):
         'shell': shell,
         'stdout': PIPE,
         'stderr': STDOUT,
-        'close_fds': True,
-        
+        'close_fds': True
     })
     process = Popen(bufsize=-1,**kwargs)
     char = b""
