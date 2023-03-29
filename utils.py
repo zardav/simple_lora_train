@@ -7,10 +7,17 @@ def run_process(args, shell=False, **kwargs):
         'shell': shell,
         'stdout': PIPE,
         'stderr': STDOUT,
-        'close_fds': True
+        'close_fds': True,
+        
     })
-    process = Popen(**kwargs)
-    for line in iter(process.stdout.readline, b''):
-        print(line.rstrip().decode('utf-8'))
+    process = Popen(bufsize=-1,**kwargs)
+    char = b""
+    for b in iter(lambda: process.stdout.read(1), b''):
+        char += b
+        try:
+            print(char.decode('utf-8'), end='')
+            char = b""
+        except:
+            pass
     process.stdout.close()
     return process.wait()
