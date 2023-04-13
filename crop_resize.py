@@ -1,5 +1,5 @@
 import yolov7
-from PIL import Image
+from PIL import Image, ImageOps
 from pathlib import Path
 from tqdm import tqdm
 import fire
@@ -94,7 +94,7 @@ class Resizer:
             return 0, 0, width, height
         
 
-def batch_resize(load_path: str, save_path: str, target_size: int = 512):
+def batch_resize(load_path: str, save_path: str, target_size: int = 512, hflip: bool = True):
     load_path = Path(load_path)
     save_path = Path(save_path)
     save_path.mkdir(exist_ok=True)
@@ -104,6 +104,8 @@ def batch_resize(load_path: str, save_path: str, target_size: int = 512):
     for f in tqdm(files_to_load):
         resized_image = resizer.get_square_image_of_size(str(f), target_size)
         resized_image.save(save_path/f.name)
-        
+        if hflip:
+            flip_path = save_path / f"{f.stem}_hflip{f.suffix}"
+            ImageOps.mirror(resized_image).save(flip_path)
 if __name__ == '__main__':
     fire.Fire(batch_resize)
