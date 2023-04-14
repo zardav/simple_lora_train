@@ -5,10 +5,14 @@ from utils import run_process
 from pathlib import Path
 
 
-def lora_train(project_name, project_dir, concepts_json_path, train_config_yaml, tmp_path=None):
+def lora_train(project_name, project_dir, concepts_json_path, train_config_yaml, tmp_path=None, save_dir=None):
     if tmp_path is None:
         tmp_path = tempfile.mkdtemp()
     tmp_path = Path(tmp_path)
+    
+    if save_dir is None:
+        save_dir = project_dir
+    save_dir = Path(save_dir)
 
     train_data_dir = tmp_path / "train_data"
     reg_data_dir = tmp_path / "reg_data"
@@ -33,7 +37,7 @@ def lora_train(project_name, project_dir, concepts_json_path, train_config_yaml,
         
     network_weights = ""
     max_epoch = 0
-    for p in project_dir.glob('*.safetensors'):
+    for p in save_dir.glob('*.safetensors'):
         cur_epoch = int(p.name.split('-')[-1].split('.')[0])
         if cur_epoch > max_epoch:
             max_epoch = cur_epoch
@@ -52,7 +56,7 @@ def lora_train(project_name, project_dir, concepts_json_path, train_config_yaml,
     if not model_path.exists():
         run_process(f"wget {train_config['model_url']} -O {model_path}", shell=True)
     if v2:
-        run_process(f"wget https://raw.githubusercontent.com/Stability-AI/stablediffusion/main/configs/stable-diffusion/v2-inference.yaml {project_dir}/{project_name}.yaml", shell=True)
+        run_process(f"wget https://raw.githubusercontent.com/Stability-AI/stablediffusion/main/configs/stable-diffusion/v2-inference.yaml -O {project_dir}/{project_name}.yaml", shell=True)
     
     train_command=f"""accelerate launch --num_cpu_threads_per_process=8 train_network.py \
       {"--v2" if v2 else ""} \
@@ -76,7 +80,7 @@ def lora_train(project_name, project_dir, concepts_json_path, train_config_yaml,
       {"--caption_extension=" + train_config['caption_extension'] if train_config['caption_extension'] else ""} \
       --train_data_dir={train_data_dir} \
       --reg_data_dir={reg_data_dir} \
-      --output_dir={project_dir} \
+      --output_dir={save_dir} \
       --prior_loss_weight={train_config['prior_loss_weight']} \
       {"--resume="+str(train_config['resume_dir']) if Path(train_config['resume_dir']).joinpath("pytorch_model.bin").exists() else ""} \
       {"--output_name=" + project_name if project_name else ""} \
