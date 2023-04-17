@@ -6,7 +6,7 @@ vae: ''
 
 num_epochs: 500
 save_n_epochs_type: save_every_n_epochs # options: ["save_every_n_epochs", "save_n_epoch_ratio"]
-save_n_epochs_type_value: 250
+save_n_epochs_type_value: 10
 train_batch_size: 1
 gradient_accumulation_steps: 1
 gradient_checkpointing: false
