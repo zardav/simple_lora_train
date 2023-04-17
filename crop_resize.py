@@ -44,13 +44,16 @@ class Resizer:
         filtered_pred = pred[person_indices, :]
         boxes = filtered_pred[:, :4] # x1, y1, x2, y2
         scores = filtered_pred[:, 4]
-        min_x = filtered_pred[:, 0].min()
-        min_y = filtered_pred[:, 1].min()
-        max_x = filtered_pred[:, 2].max()
-        max_y = filtered_pred[:, 3].max()
-        margin = 20
         image = Image.open(img_path)
         width, height = image.size
+        if filtered_pred.shape[0] > 0:
+            min_x = filtered_pred[:, 0].min()
+            min_y = filtered_pred[:, 1].min()
+            max_x = filtered_pred[:, 2].max()
+            max_y = filtered_pred[:, 3].max()
+        else:
+            min_x, min_y, max_x, max_y = 0, 0, width, height
+        margin = 20
         minimum_box = max(0, min_x-margin), max(0, min_y-margin), min(width, max_x+margin), min(height, max_y+margin)
         xy_diff = width - height
         if xy_diff > 0:
