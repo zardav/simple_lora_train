@@ -5,7 +5,7 @@ from utils import run_process
 from pathlib import Path
 
 
-def lora_train(project_name, project_dir, concepts_json_path, train_config_yaml, tmp_path=None, save_dir=None):
+def lora_train(project_name, project_dir, concepts_json_path, train_config_yaml, tmp_path=None, save_dir=None, config_override=None, additional_cmd_args=''):
     if tmp_path is None:
         tmp_path = tempfile.mkdtemp()
     tmp_path = Path(tmp_path)
@@ -49,6 +49,8 @@ def lora_train(project_name, project_dir, concepts_json_path, train_config_yaml,
     
     with open(train_config_yaml) as f:
         train_config = yaml.safe_load(f)
+    if config_override is not None:
+        train_config.update(config_override)
     
     model_path = Path(train_config['model_path']).absolute()
     v2 = train_config['v2']
@@ -105,7 +107,7 @@ def lora_train(project_name, project_dir, concepts_json_path, train_config_yaml,
       --logging_dir={tmp_path/'logs'} \
       --log_prefix={project_name} \
       {"--shuffle_caption" if train_config['shuffle_caption'] else ""} \
-      --xformers"""
+      --xformers {additional_cmd_args}"""
     if not Path("kohya-trainer").exists():
         run_process("git clone https://github.com/Linaqruf/kohya-trainer", shell=True)
     run_process(train_command, shell=True, cwd="kohya-trainer")
